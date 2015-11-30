@@ -26,7 +26,7 @@ import java.util.Locale;
 public class MainActivity extends ActionBarActivity {
     //Explicit
     private NfcAdapter nfcAdapter;
-    private String tagNFCString;
+    private String tagNFCString,userIdString;
     private static final String TAG = "Suthep";
     private String nameString,locationString, statusString;
 
@@ -45,15 +45,17 @@ public class MainActivity extends ActionBarActivity {
 
     }   // Main Method
 
-    private void createListView() {
+    private void createListView() {             //สร้าง list view
+
         String[] deviceStrings = null;
+        userIdString = getIntent().getStringExtra("userID");
 
 
         try {
             String[] strResult = null;
 
             SQLiteDatabase objSqLiteDatabase = openOrCreateDatabase("golf.db", MODE_PRIVATE, null);
-            Cursor objCursor = objSqLiteDatabase.rawQuery("SELECT * FROM assignTABLE WHERE checkStatus = " + "'UNCHECK'",
+            Cursor objCursor = objSqLiteDatabase.rawQuery("SELECT * FROM assignTABLE WHERE checkStatus = " + "'UNCHECK' AND userTABLE_Golf_user_id = " +userIdString+ "  ",
                     null);
             objCursor.moveToFirst();
 
@@ -77,6 +79,7 @@ public class MainActivity extends ActionBarActivity {
                 deviceStrings[i] = obj2Cursor.getString(obj2Cursor.getColumnIndex("Name"));
 
                 Log.d("Suthep", "nameDevice ==> " + deviceStrings[i]);
+                Log.d("Suthep", "userId==>" + userIdString);
 
             }   // for
 

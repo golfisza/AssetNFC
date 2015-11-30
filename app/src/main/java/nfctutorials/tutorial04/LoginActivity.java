@@ -92,6 +92,11 @@ public class LoginActivity extends ActionBarActivity {
             userIDString = arrayDATA[0];
 
 
+            //พยายามส่งค่าไป main activity
+
+            //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //intent.putExtra("userID",userIDString);
+
             if (passwordString.equals(truePasswordString)) {
 
                 //พาสเวิร์ดใช่ไปไหนต่อ ????
@@ -122,6 +127,7 @@ public class LoginActivity extends ActionBarActivity {
                 dialogInterface.dismiss();
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("userID",userIDString);
 
                 startActivity(intent);
 
