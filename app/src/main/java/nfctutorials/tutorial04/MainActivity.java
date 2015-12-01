@@ -48,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
     private void createListView() {             //สร้าง list view
 
         String[] deviceStrings = null;
-        userIdString = getIntent().getStringExtra("userID");
+        userIdString = getIntent().getStringExtra("userID"); //รับค่า userid จากหน้า Login
 
 
         try {
@@ -78,8 +78,8 @@ public class MainActivity extends ActionBarActivity {
                 obj2Cursor.moveToPosition(Integer.parseInt(strResult[i]) - 1);
                 deviceStrings[i] = obj2Cursor.getString(obj2Cursor.getColumnIndex("Name"));
 
-                Log.d("Suthep", "nameDevice ==> " + deviceStrings[i]);
-                Log.d("Suthep", "userId==>" + userIdString);
+                Log.d("Suthep", "nameDevice ==> " + deviceStrings[i]); // ตรวจสอบว่า device name มีอะไรบ้าง ด้วย logcat
+                Log.d("Suthep", "userId==>" + userIdString); //ตรวจสอบว่าค่า userid ที่ส่งมามีค่าเท่าไร ด้วย logcat
 
             }   // for
 
@@ -168,9 +168,12 @@ public class MainActivity extends ActionBarActivity {
             nameString = strMyResult[2];
             locationString = strMyResult[3];
             statusString = strMyResult[4];
-            Log.d("Suthep", "Name"  + nameString);
-            Log.d("Suthep", "location"  + locationString);
-            Log.d("Suthep", "status"  + statusString);
+            Log.d("Suthep", "Name"  + nameString);  //แสดงค่าที่ได้ logcat
+            Log.d("Suthep", "location"  + locationString);//แสดงค่าที่ได้ logcat
+            Log.d("Suthep", "status"  + statusString);//แสดงค่าที่ได้ logcat
+
+
+
 
         } catch (Exception e) {
             Toast.makeText(MainActivity.this,"No This NFC in Database",Toast.LENGTH_LONG).show();

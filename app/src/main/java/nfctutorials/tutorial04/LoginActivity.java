@@ -126,7 +126,7 @@ public class LoginActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
 
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class); //ส่งค่า userid ที่ login ไปหน้า mainactivity
                 intent.putExtra("userID",userIDString);
 
                 startActivity(intent);
