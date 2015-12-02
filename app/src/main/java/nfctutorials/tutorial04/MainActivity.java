@@ -1,6 +1,8 @@
 package nfctutorials.tutorial04;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -15,8 +17,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.w3c.dom.Comment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -28,7 +34,10 @@ public class MainActivity extends ActionBarActivity {
     private NfcAdapter nfcAdapter;
     private String tagNFCString,userIdString;
     private static final String TAG = "Suthep";
-    private String nameString,locationString, statusString;
+    private String nameString,locationString, statusString,selected,comment;
+    private String[] select = {"good", "fail", "Etc"};
+
+
 
 
     @Override
@@ -170,7 +179,54 @@ public class MainActivity extends ActionBarActivity {
             statusString = strMyResult[4];
             Log.d("Suthep", "Name"  + nameString);  //แสดงค่าที่ได้ logcat
             Log.d("Suthep", "location"  + locationString);//แสดงค่าที่ได้ logcat
-            Log.d("Suthep", "status"  + statusString);//แสดงค่าที่ได้ logcat
+            Log.d("Suthep", "status" + statusString);//แสดงค่าที่ได้ logcat
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle(nameString);
+            builder.setSingleChoiceItems(select, 0, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    selected = select[i];
+                }
+            });
+            builder.setPositiveButton("ยืนยัน", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //Toast.makeText(getApplicationContext(), "สภาวะทรัพย์สิน" + selected, Toast.LENGTH_LONG);
+                    Log.d("Suthep", "select===>" + selected);
+                    dialogInterface.dismiss();
+                    if (selected == "good") {
+                        dialogInterface.dismiss();
+                    } else {
+                        AlertDialog.Builder commentBuilder1 = new AlertDialog.Builder(MainActivity.this);
+                        commentBuilder1.setTitle(nameString);
+                        commentBuilder1.setMessage("Comment");
+                        final EditText input = new EditText(MainActivity.this);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT
+                        );
+                        input.setLayoutParams(layoutParams);
+                        commentBuilder1.setView(input);
+                        commentBuilder1.setIcon(R.drawable.question);
+                        commentBuilder1.setPositiveButton("OK !", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                comment = input.getText().toString();
+                                Log.d("Suthep", "comment==>" + comment);
+
+
+                            }
+                        });
+                        commentBuilder1.show();
+
+                    }
+
+
+                }
+            });
+            builder.show();
+
 
 
 

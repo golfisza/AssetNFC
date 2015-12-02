@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 /**
- * Created by masterUNG on 11/30/15 AD.
+ * Created by songkran on 11/30/15 AD.
  */
 public class MyAdapter extends BaseAdapter{
 
