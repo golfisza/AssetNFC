@@ -35,7 +35,11 @@ public class MainActivity extends ActionBarActivity {
     private String tagNFCString,userIdString;
     private static final String TAG = "Suthep";
     private String nameString,locationString, statusString,selected,comment;
-    private String[] select = {"good", "fail", "Etc"};
+    private String[] select = {"good", "bad", "Etc"};
+    SQLiteDatabase write;
+    MyOpenHelper myOpenHelper;
+    ManageTABLE mngTable;
+    private int num;
 
 
 
@@ -51,6 +55,10 @@ public class MainActivity extends ActionBarActivity {
 
         //Create ListView
         createListView();
+
+
+        myOpenHelper = new MyOpenHelper(this);
+        write = myOpenHelper.getWritableDatabase();
 
     }   // Main Method
 
@@ -181,12 +189,14 @@ public class MainActivity extends ActionBarActivity {
             Log.d("Suthep", "location"  + locationString);//แสดงค่าที่ได้ logcat
             Log.d("Suthep", "status" + statusString);//แสดงค่าที่ได้ logcat
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle(nameString);
             builder.setSingleChoiceItems(select, 0, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     selected = select[i];
+                    num = i;
+
                 }
             });
             builder.setPositiveButton("ยืนยัน", new DialogInterface.OnClickListener() {
@@ -194,9 +204,29 @@ public class MainActivity extends ActionBarActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     //Toast.makeText(getApplicationContext(), "สภาวะทรัพย์สิน" + selected, Toast.LENGTH_LONG);
                     Log.d("Suthep", "select===>" + selected);
+                    Log.d("Suthep", "num ===" + num);
                     dialogInterface.dismiss();
-                    if (selected == "good") {
-                        dialogInterface.dismiss();
+
+                    //update SQLite จาก uncheck เป็น check
+                    //   write.execSQL("UPDATE" + mngTable.TABLE_ASSIGNED +
+                    //          "WHERE" +mngTable.);
+
+
+
+                    if (num == (0)) {   //กำหนดเงื่อนไขเพื่อการกรอก comment
+
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                        builder1.setTitle(nameString);
+                        builder1.setMessage("สภาพทรัพย์สินปกติ");
+                        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder1.show();
+
+
                     } else {
                         AlertDialog.Builder commentBuilder1 = new AlertDialog.Builder(MainActivity.this);
                         commentBuilder1.setTitle(nameString);
