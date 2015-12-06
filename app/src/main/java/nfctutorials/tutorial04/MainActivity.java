@@ -15,17 +15,29 @@ import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.w3c.dom.Comment;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 
@@ -34,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
     private NfcAdapter nfcAdapter;
     private String tagNFCString,userIdString;
     private static final String TAG = "Suthep";
-    private String nameString,locationString, statusString,selected,comment;
+    private String deviceId,nameString,locationString, statusString,selected,comment,checkStatus;
     private String[] select = {"good", "bad", "Etc"};
     SQLiteDatabase write;
     MyOpenHelper myOpenHelper;
@@ -70,6 +82,7 @@ public class MainActivity extends ActionBarActivity {
 
         try {
             String[] strResult = null;
+          //  String[] assetID = null;
 
             SQLiteDatabase objSqLiteDatabase = openOrCreateDatabase("golf.db", MODE_PRIVATE, null);
             Cursor objCursor = objSqLiteDatabase.rawQuery("SELECT * FROM assignTABLE WHERE checkStatus = " + "'UNCHECK' AND userTABLE_Golf_user_id = " +userIdString+ "  ",
@@ -77,10 +90,13 @@ public class MainActivity extends ActionBarActivity {
             objCursor.moveToFirst();
 
 
+           // assetID = new String[objCursor.getCount()];
             strResult = new String[objCursor.getCount()];
             for (int i=0;i<objCursor.getCount();i++) {
+               // assetID[i] = objCursor.getString(objCursor.getColumnIndex("_id"));
 
                 strResult[i] = objCursor.getString(objCursor.getColumnIndex("deviceTABLE_Golf_device_id"));
+              //  Log.d("Suthep", "Asset id ====" + assetID[i]);
 
                 Log.d("Suthep", "indexDevicer ==> " + strResult[i]);
 
@@ -182,11 +198,13 @@ public class MainActivity extends ActionBarActivity {
         try {
             ManageTABLE objManageTABLE = new ManageTABLE(this);
             String[] strMyResult = objManageTABLE.searchTagNFC(tagNFCString);
+            deviceId = strMyResult[0];
             nameString = strMyResult[2];
             locationString = strMyResult[3];
             statusString = strMyResult[4];
-            Log.d("Suthep", "Name"  + nameString);  //แสดงค่าที่ได้ logcat
-            Log.d("Suthep", "location"  + locationString);//แสดงค่าที่ได้ logcat
+            Log.d("Suthep", deviceId);
+            Log.d("Suthep", "Name" + nameString);  //แสดงค่าที่ได้ logcat
+            Log.d("Suthep", "location" + locationString);//แสดงค่าที่ได้ logcat
             Log.d("Suthep", "status" + statusString);//แสดงค่าที่ได้ logcat
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -207,11 +225,6 @@ public class MainActivity extends ActionBarActivity {
                     Log.d("Suthep", "num ===" + num);
                     dialogInterface.dismiss();
 
-                    //update SQLite จาก uncheck เป็น check
-                    //   write.execSQL("UPDATE" + mngTable.TABLE_ASSIGNED +
-                    //          "WHERE" +mngTable.);
-
-
 
                     if (num == (0)) {   //กำหนดเงื่อนไขเพื่อการกรอก comment
 
@@ -222,6 +235,12 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
+                                //สำหรับ update  check
+                                updatecheck();
+
+
+
+
                             }
                         });
                         builder1.show();
@@ -264,6 +283,33 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             Toast.makeText(MainActivity.this,"No This NFC in Database",Toast.LENGTH_LONG).show();
         }
+
+
+    }
+
+    private void updatecheck() {
+        InputStream is = null;
+        // String js_result = "";
+        // boolean success = false;
+        checkStatus = "CHECK";
+        try {
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("deviceID", deviceId));
+            nameValuePairs.add(new BasicNameValuePair("userIdString", userIdString));
+           // nameValuePairs.add(new BasicNameValuePair("checkStatus", checkStatus));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://www.swiftcodingthai.com/golf/php_update_check.php");
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
+
+        } catch (Exception e) {
+            Log.d("log_err", "Error in http connection " + e.toString());
+
+        }
+
 
 
     }
@@ -391,5 +437,6 @@ public class MainActivity extends ActionBarActivity {
         }
         return tagContent;
     }
+
 
 }//Main Class
