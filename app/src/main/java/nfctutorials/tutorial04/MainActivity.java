@@ -263,6 +263,24 @@ public class MainActivity extends ActionBarActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 comment = input.getText().toString();
                                 Log.d("Suthep", "comment==>" + comment);
+                                // เพิ่ม comment และ status
+
+                                if (num == 1) {   // เมื่อเลือก fail
+                                    updatecheck();
+                                    updatebad();
+                                    updateComment();
+
+
+
+                                } else {    // เมื่อเลือก etc
+                                    updatecheck();
+                                    updateEtc();
+                                    updateComment();
+
+
+
+
+                                }
 
 
                             }
@@ -287,16 +305,79 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    private void updateComment() {
+        InputStream is = null;
+        try {
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("deviceID", deviceId));
+            nameValuePairs.add(new BasicNameValuePair("comment", comment));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://www.swiftcodingthai.com/golf/php_update_comment.php");
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
+
+        } catch (Exception e) {
+            Log.d("log_err", "Error in http connection " + e.toString());
+
+        }
+
+
+    }
+
+    private void updateEtc() {
+        InputStream is = null;
+        try {
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("deviceID", deviceId));
+            //nameValuePairs.add(new BasicNameValuePair("comment", comment));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://www.swiftcodingthai.com/golf/php_update_etc.php");
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
+
+        } catch (Exception e) {
+            Log.d("log_err", "Error in http connection " + e.toString());
+
+        }
+
+
+    }
+
+    private void updatebad() {
+        InputStream is = null;
+        try {
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("deviceID", deviceId));
+            //nameValuePairs.add(new BasicNameValuePair("comment", comment));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://www.swiftcodingthai.com/golf/php_update_bad.php");
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
+
+        } catch (Exception e) {
+            Log.d("log_err", "Error in http connection " + e.toString());
+
+        }
+
+    }
+
     private void updatecheck() {
         InputStream is = null;
-        // String js_result = "";
-        // boolean success = false;
-        checkStatus = "CHECK";
+
+       // checkStatus = "CHECK";
         try {
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             nameValuePairs.add(new BasicNameValuePair("deviceID", deviceId));
             nameValuePairs.add(new BasicNameValuePair("userIdString", userIdString));
-           // nameValuePairs.add(new BasicNameValuePair("checkStatus", checkStatus));
 
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost("http://www.swiftcodingthai.com/golf/php_update_check.php");
